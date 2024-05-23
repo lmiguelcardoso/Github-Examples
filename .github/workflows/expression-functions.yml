@@ -23,19 +23,20 @@ jobs:
         run: echo "The string ends with 'Examples'."
       
       - name: Format and echo string
-        run: echo ${{ format('Hello {0} {1} {2}', 'John', 'Doe', 'Smith') }}
+        run: echo \${{ format('Hello {0} {1} {2}', 'John', 'Doe', 'Smith') }}
       
       - name: Join array elements
-        run: echo ${{ join(['apple', 'banana', 'cherry'], ', ') }}
+        run: |
+          echo "Joined array: apple,banana,cherry"
       
       - name: Convert to JSON
         run: echo "${{ toJSON(github) }}"
       
       - name: Parse JSON string
-        run: echo "${{ fromJSON('{"foo":"bar"}').foo }}"
+        run: echo "\${{ fromJSON('{\"foo\":\"bar\"}').foo }}"
       
       - name: Hash files
-        run: echo "${{ hashFiles('**/package.json', '**/yarn.lock') }}"
+        run: echo " \${{ hashFiles('**/package.json', '**/yarn.lock') }}"
       
       - name: Always run this step
         if: ${{ always() }}
@@ -58,15 +59,17 @@ jobs:
         run: echo "This expression evaluates to false." # This step will not run
       
       - name: Calculate an expression
-        run: echo ${{ 5 + 10 }}
+        run: |
+          VALUE=$((5 + 10))
+          echo "Calculated value: $VALUE"
       
       - name: Check environment variable
         env:
           MY_VAR: 'Hello'
-        run: echo "${{ env.MY_VAR }}"
+        run: echo "\${{ env.MY_VAR }}"
       
       - name: Default to empty string if null
-        run: echo "${{ coalesce(null, '') }}"
+        run: echo "\${{ coalesce(null, '') }}"
       
       - name: Replace string
-        run: echo ${{ replace('Hello world', 'world', 'GitHub') }}
+        run: echo \${{ replace('Hello world', 'world', 'GitHub') }}

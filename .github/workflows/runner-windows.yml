@@ -21,7 +21,7 @@ jobs:
         run: echo "result=output_value" >> $GITHUB_OUTPUT
 
       - name: Use output
-        run: echo "The output was ${{step.set_output.outputs.result}}"
+        run: echo "The output was ${{steps.set_output.outputs.result}}"
       
       - name: Create a debug message
         run: echo "::debug::This is a debug message"

@@ -1,75 +1,39 @@
-name: Expression Functions Examples
+name: Expression Functions Demo
+
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
+  issues:
+    types: [opened, labeled]
+
 jobs:
-  expression-functions-demo:
+  expression-functions:
     runs-on: ubuntu-latest
     steps:
       - name: Check if string contains substring
-        if: ${{ contains('Expression Functions Examples', 'Functions') }}
-        run: echo "The string contains the substring 'Functions'."
-      
+        if: contains('Hello world', 'llo')
+        run: echo "The string contains the substring."
       - name: Check if string starts with
-        if: ${{ startsWith('Expression Functions Examples', 'Expression') }}
-        run: echo "The string starts with 'Expression'."
-      
+        if: startsWith('Hello world', 'He')
+        run: echo "The string starts with 'He'."
       - name: Check if string ends with
-        if: ${{ endsWith('Expression Functions Examples', 'Examples') }}
-        run: echo "The string ends with 'Examples'."
-      
+        if: endsWith('Hello world', 'ld')
+        run: echo "The string ends with 'ld'."
       - name: Format and echo string
-        run: echo \${{ format('Hello {0} {1} {2}', 'John', 'Doe', 'Smith') }}
-      
-      - name: Join array elements
-        run: |
-          echo "Joined array: apple,banana,cherry"
-      
-      - name: Convert to JSON
-        run: echo "${{ toJSON(github) }}"
-      
+        run: echo ${{ format('Hello {0} {1} {2}', 'Mona', 'the', 'Octocat') }}
+      - name: Join issue labels
+        if: github.event_name == 'issues'
+        run: "echo \"Issue labels: ${{ join(github.event.issue.labels.*.name, ', ') }}\""
+      - name: Convert job context to JSON
+        run: "echo \"Job context in JSON: ${{ toJSON(github.job) }}\""
       - name: Parse JSON string
-        run: echo "\${{ fromJSON('{\"foo\":\"bar\"}').foo }}"
-      
+        run: "echo \"Parsed JSON: ${{ fromJSON('{\"hello\":\"world\"}').hello }} \""
       - name: Hash files
-        run: echo " \${{ hashFiles('**/package.json', '**/yarn.lock') }}"
-      
-      - name: Always run this step
-        if: ${{ always() }}
-        run: echo "This step always runs."
-      
-      - name: Check if job status is success
+        run: "echo \"Hash of files: ${{ hashFiles('**/package-lock.json', '**/Gemfile.lock') }}\""
+      - name: The job has succeeded
         if: ${{ success() }}
-        run: echo "The job has succeeded."
-      
-      - name: Check if job status is failure
+        run: echo "Sucess"
+      - name: The job has failed
         if: ${{ failure() }}
-        run: echo "The job has failed."
-      
-      - name: Check if expression is true
-        if: ${{ true }}
-        run: echo "This expression evaluates to true."
-      
-      - name: Check if expression is false
-        if: ${{ false }}
-        run: echo "This expression evaluates to false." # This step will not run
-      
-      - name: Calculate an expression
-        run: |
-          VALUE=$((5 + 10))
-          echo "Calculated value: $VALUE"
-      
-      - name: Check environment variable
-        env:
-          MY_VAR: 'Hello'
-        run: echo "\${{ env.MY_VAR }}"
-      
-      - name: Default to empty string if null
-        run: echo "\${{ coalesce(null, '') }}"
-      
-      - name: Replace string
-        run: echo \${{ replace('Hello world', 'world', 'GitHub') }}
+        run: echo "Failure"

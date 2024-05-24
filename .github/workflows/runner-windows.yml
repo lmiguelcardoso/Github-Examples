@@ -1,4 +1,4 @@
-name: Windows Workflow Example
+name: Workflow commands
 
 on:
   push:
@@ -7,29 +7,22 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Set env vars
+        run: echo "ACTION_ENV=production" >> $GITHUB_ENV
 
-      - name: Install dependencies
-        run: choco install dotnetcore-sdk
-        shell: powershell
+      - name: Adding a directory to a path
+        run: echo "/path/to/dir" >> $GITHUB_PATH
 
-      - name: Compile and run C# program
-        run: |
-          Add-Content -Path "Hello.cs" -Value @"
-          using System;
-          public class Hello
-          {
-              public static void Main()
-              {
-                  Console.WriteLine("Hello, Windows from C#");
-              }
-          }
-          "@
-          dotnet new console --force --no-restore
-          Move-Item -Path "Hello.cs" -Destination "Program.cs" -Force
-          dotnet run
-        shell: powershell
+      - name: Set output
+        id: set_output
+        run: echo "result=output_value" >> $GITHUB_OUTPUT
+
+      - name: Use output
+        run: echo "The output was ${{step.set_output.outputs.result}}"
+      
+      - name: Create a debug message
+        run: echo "::debug::This is a debug message"
+      
